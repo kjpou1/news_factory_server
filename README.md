@@ -309,6 +309,8 @@ curl -X GET "http://localhost:8036/today.ics?currencies=AUD,GBP&impact-classes=y
 
 Each endpoint configuration points to a JSON file containing event data. Below is an example of the JSON data structure and the documentation for each field.
 
+See sister project [news_factory](https://github.com/kjpou1/news_factory) for generating forex news events.
+
 Example JSON Data:
 
 ```json
