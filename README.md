@@ -304,7 +304,6 @@ curl -X GET "http://localhost:8036/today.ics?currencies=AUD,GBP&impact-classes=y
    ```bash
    curl -X GET "http://localhost:8036/today_nnfx.ics?currencies=USD,EUR&impact-classes=orange,gray"
    ```
-```
 
 ## Endpoint JSON Data
 
