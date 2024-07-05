@@ -114,13 +114,13 @@ Example configuration file (config.json):
 }
 ````
 
-Place the configuration file in the desired location and provide its path using the --config argument when running the server.
+Place the configuration file in the desired location and provide its path using the `--config` argument when running the server.
 
-# URL Endpoints, Filters, and Query Parameters
+## URL Endpoints, Filters, and Query Parameters
 
-## URL Endpoints
+### URL Endpoints
 
-### `today.ics` Endpoint
+#### `today.ics` Endpoint
 
 **URL:** `/today.ics`
 
@@ -132,7 +132,7 @@ Place the configuration file in the desired location and provide its path using 
 curl -X GET "http://localhost:8036/today.ics"
 ```
 
-### `today_nnfx.ics` Endpoint
+#### `today_nnfx.ics` Endpoint
 
 **URL:** `/today_nnfx.ics`
 
