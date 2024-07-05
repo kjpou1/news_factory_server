@@ -118,6 +118,13 @@ Place the configuration file in the desired location and provide its path using 
 
 ## URL Endpoints, Filters, and Query Parameters
 
+> [!NOTE]
+> The URL Endpoints used and referenced below come from the example config mentioned above.
+
+> [!IMPORTANT]
+> The URL Endpoints used and referenced below do not exist by default and are here only as documentation purposes from the example config above.
+
+
 ### URL Endpoints
 
 #### `today.ics` Endpoint
