@@ -12,6 +12,7 @@ It leverages Flask for the web framework and supports flexible endpoint configur
 
 This project serves as a foundational template for building sophisticated calendar-based applications.
 
+See sister project [news_factory](https://github.com/kjpou1/news_factory) for generating forex news events.
 
 ## Table of Contents
 
