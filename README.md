@@ -81,7 +81,8 @@ The configuration settings are managed through environment variables and can be 
 Example `.env` file:
 
 ``` 
-ENV_KEY=example value
+SERVER_HOST=0.0.0.0
+SERVER_PORT=8036
 ```
 
 > [!NOTE]
