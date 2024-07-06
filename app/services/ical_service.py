@@ -1,11 +1,13 @@
 import logging
+
 from app.config.config import Config
-from app.services.data_service import DataService
 from app.factories.calendar_factory import CalendarFactory
+from app.services.data_service import DataService
+
 
 class ICalService:
     @staticmethod
-    def generate_ical(data, implementation: str = 'default'):
+    def generate_ical(data, implementation: str = "default"):
         config = Config()
 
         if data:

@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class ICalendar(ABC):
     @abstractmethod
     def add_event(self, event):

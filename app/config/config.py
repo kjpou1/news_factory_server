@@ -1,11 +1,15 @@
 import logging
 import os
+
 from dotenv import load_dotenv
-from app.models import SingletonMeta
+
 from app.helpers.constants import DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT
 from app.helpers.resource_loader import ResourceLoader
+from app.models import SingletonMeta
 from app.models.event_ep import EventEP
-#from app.services.data_repository_service import DataRepositoryService
+
+# from app.services.data_repository_service import DataRepositoryService
+
 
 class Config(metaclass=SingletonMeta):
     _is_initialized = False
@@ -20,7 +24,7 @@ class Config(metaclass=SingletonMeta):
             self._today_data = None
             self._impact_classes = None
             self._currencies = None
-            self.data_repository_service = None  # Initialize DataRepository later            
+            self.data_repository_service = None  # Initialize DataRepository later
             self._is_initialized = True
 
     @classmethod
@@ -30,14 +34,22 @@ class Config(metaclass=SingletonMeta):
     @staticmethod
     def get(key, default=None):
         return os.getenv(key, default)
-    
+
     @property
     def server_host(self):
-        return self._server if self._server else self.get('SERVER_HOST', DEFAULT_SERVER_HOST)
+        return (
+            self._server
+            if self._server
+            else self.get("SERVER_HOST", DEFAULT_SERVER_HOST)
+        )
 
     @property
     def server_port(self):
-        return self._port if self._port else int(self.get('SERVER_PORT', DEFAULT_SERVER_PORT))
+        return (
+            self._port
+            if self._port
+            else int(self.get("SERVER_PORT", DEFAULT_SERVER_PORT))
+        )
 
     @property
     def today_data(self):
@@ -71,15 +83,19 @@ class Config(metaclass=SingletonMeta):
     def load_config(self, config_path):
         """
         Load configurations from a JSON file.
-        
+
         Parameters:
         config_path (str): Path to the JSON configuration file
         """
         try:
-            data = ResourceLoader.load_json_file(config_path)            
-            self.configurations = [EventEP(**ep) for ep in data.get('configurations', [])]
-            self.logger.info(f"Loaded configuration from {config_path}")
+            data = ResourceLoader.load_json_file(config_path)
+            self.configurations = [
+                EventEP(**ep) for ep in data.get("configurations", [])
+            ]
+            self.logger.info("Loaded configuration from %s", config_path)
             # Initialize DataRepositoryService with the loaded configurations
-            #self.data_repository_service = {} #DataRepositoryService(self.configurations)            
+            # self.data_repository_service = {} #DataRepositoryService(self.configurations)
         except Exception as e:
-            self.logger.exception(f"Failed to load configuration file {config_path}: {e}")
+            self.logger.exception(
+                "Failed to load configuration file %s: %s", config_path, e
+            )

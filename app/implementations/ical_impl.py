@@ -1,11 +1,14 @@
-from ics import Calendar, Event
-from datetime import timedelta, datetime
-from app.core.icalendar import ICalendar
-from dateutil import parser
-import pytz
 import logging
+from datetime import timedelta
+
+import pytz
+from dateutil import parser
+from ics import Calendar, Event
+
+from app.core.icalendar import ICalendar
 
 logger = logging.getLogger(__name__)
+
 
 class ICalImpl(ICalendar):
     def __init__(self):
@@ -41,39 +44,45 @@ class ICalImpl(ICalendar):
     def add_event(self, event):
         """
         Add a single event to the iCalendar from JSON data.
-        
+
         Parameters:
         calendar (Calendar): The iCalendar object to add events to
         event (dict): A dictionary containing event details
-        
+
         This method parses the event details from the provided JSON data and adds it to the
         iCalendar object. It supports both all-day events and time-specific events.
         """
         try:
             ical_event = Event()
-            ical_event.name = event.get('trimmedPrefixedName')  # Add the event name
+            ical_event.name = event.get("trimmedPrefixedName")  # Add the event name
 
             # Parse and convert start time to UTC
-            dtstart = parser.parse(event.get('timestamp_local')).astimezone(self.timezone)
-            if event.get('timeLabel') == 'All Day':
+            dtstart = parser.parse(event.get("timestamp_local")).astimezone(
+                self.timezone
+            )
+            if event.get("timeLabel") == "All Day":
                 dtstart = dtstart.date()  # Convert to date for all-day events
                 dtend = dtstart + timedelta(days=1)  # Set end date to the next day
                 ical_event.begin = dtstart
                 ical_event.end = dtend
                 ical_event.make_all_day()
             else:
-                dtend = dtstart + timedelta(hours=1)  # Set end time to one hour after start time
+                dtend = dtstart + timedelta(
+                    hours=1
+                )  # Set end time to one hour after start time
                 ical_event.begin = dtstart
                 ical_event.end = dtend
 
             # Add other event details
             ical_event.description = f"Country: {event.get('country')}, Impact: {event.get('impactTitle')}, Forecast: {event.get('forecast')}, Previous: {event.get('previous')}"
-            ical_event.location = event.get('country')
+            ical_event.location = event.get("country")
 
             # Add the event to the calendar
             self.calendar.events.add(ical_event)
         except Exception as e:
-            logger.exception("Failed to create iCal event for JSON event: %s", event, e)
+            logger.exception(
+                "Failed to create iCal event for JSON event: %s\n%s", event, e
+            )
 
     def to_string(self):
         """

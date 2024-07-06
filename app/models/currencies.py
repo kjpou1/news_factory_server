@@ -2,14 +2,14 @@ from enum import Enum
 
 
 class Currencies(Enum):
-    AUD = 'AUD'
-    CAD = 'CAD'
-    CHF = 'CHF'
-    EUR = 'EUR'
-    GBP = 'GBP'
-    JPY = 'JPY'
-    NZD = 'NZD'
-    USD = 'USD'
+    AUD = "AUD"
+    CAD = "CAD"
+    CHF = "CHF"
+    EUR = "EUR"
+    GBP = "GBP"
+    JPY = "JPY"
+    NZD = "NZD"
+    USD = "USD"
 
     @staticmethod
     def from_text(text):
@@ -17,14 +17,14 @@ class Currencies(Enum):
             raise ValueError("Input text cannot be None")
         text = text.strip().upper()
         mapping = {
-            'AUD': Currencies.AUD,
-            'CAD': Currencies.CAD,
-            'CHF': Currencies.CHF,
-            'EUR': Currencies.EUR,
-            'GBP': Currencies.GBP,
-            'JPY': Currencies.JPY,
-            'NZD': Currencies.NZD,
-            'USD': Currencies.USD
+            "AUD": Currencies.AUD,
+            "CAD": Currencies.CAD,
+            "CHF": Currencies.CHF,
+            "EUR": Currencies.EUR,
+            "GBP": Currencies.GBP,
+            "JPY": Currencies.JPY,
+            "NZD": Currencies.NZD,
+            "USD": Currencies.USD,
         }
         if text not in mapping:
             raise ValueError(f"Invalid text for Currencies: '{text}'")
@@ -33,14 +33,14 @@ class Currencies(Enum):
     @staticmethod
     def to_text(enum_value):
         reverse_mapping = {
-            Currencies.AUD: 'AUD',
-            Currencies.CAD: 'CAD',
-            Currencies.CHF: 'CHF',
-            Currencies.EUR: 'EUR',
-            Currencies.GBP: 'GBP',
-            Currencies.JPY: 'JPY',
-            Currencies.NZD: 'NZD',
-            Currencies.USD: 'USD'
+            Currencies.AUD: "AUD",
+            Currencies.CAD: "CAD",
+            Currencies.CHF: "CHF",
+            Currencies.EUR: "EUR",
+            Currencies.GBP: "GBP",
+            Currencies.JPY: "JPY",
+            Currencies.NZD: "NZD",
+            Currencies.USD: "USD",
         }
         if enum_value not in reverse_mapping:
             raise ValueError(f"Invalid Currencies value: '{enum_value}'")

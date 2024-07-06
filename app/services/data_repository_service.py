@@ -3,6 +3,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class DataRepositoryService:
     def __init__(self, configurations):
         """
@@ -30,16 +31,25 @@ class DataRepositoryService:
         file_path (str): Path to the file to be loaded.
         """
         try:
-            with open(file_path, 'r') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 # Find the corresponding endpoint for the file
-                endpoint = next((ep.end_point for ep in self.configurations if ep.file == file_path), None)
+                endpoint = next(
+                    (
+                        ep.end_point
+                        for ep in self.configurations
+                        if ep.file == file_path
+                    ),
+                    None,
+                )
                 if endpoint:
                     self.data[endpoint] = json.load(f)
-                    logger.info(f"Loaded data from {file_path} for endpoint {endpoint}")
+                    logger.info(
+                        "Loaded data from %a for endpoint %a", file_path, endpoint
+                    )
                 else:
-                    logger.warning(f"No endpoint found for file {file_path}")
+                    logger.warning("No endpoint found for file %s", file_path)
         except Exception as e:
-            logger.exception(f"Failed to load data from {file_path}: {e}")
+            logger.exception("Failed to load data from %s: %s", file_path, e)
 
     def get_data(self, endpoint):
         """

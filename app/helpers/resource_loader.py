@@ -1,9 +1,10 @@
-import os
-import logging
 import json
+import logging
+import os
 
 # Initialize the logger for this module
 logger = logging.getLogger(__name__)
+
 
 class ResourceLoader:
     @staticmethod
@@ -14,7 +15,7 @@ class ResourceLoader:
     def load_resource_file(filename):
         file_path = os.path.join(filename)
         try:
-            with open(file_path, 'r', encoding='UTF-8') as file:
+            with open(file_path, "r", encoding="UTF-8") as file:
                 content = file.read()
                 logger.info("Successfully loaded resource file: %s", filename)
                 return content

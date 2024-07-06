@@ -1,6 +1,5 @@
 import logging
-from app.models.currencies import Currencies
-from app.models.impact_class import ImpactClass
+
 
 class DataService:
     @staticmethod
@@ -22,10 +21,19 @@ class DataService:
 
         # Apply impact classes filter first
         if impact_classes:
-            data = [event for event in data if event['impactClass'] in [impact_class.value for impact_class in impact_classes]]
+            data = [
+                event
+                for event in data
+                if event["impactClass"]
+                in [impact_class.value for impact_class in impact_classes]
+            ]
 
         # Apply currencies filter on the already filtered data
         if currencies:
-            data = [event for event in data if event['currency'] in [currency.value for currency in currencies]]
+            data = [
+                event
+                for event in data
+                if event["currency"] in [currency.value for currency in currencies]
+            ]
 
         return data

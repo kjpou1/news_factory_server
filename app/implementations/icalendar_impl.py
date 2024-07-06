@@ -1,17 +1,20 @@
-from icalendar import Calendar, Event, Timezone, TimezoneStandard, TimezoneDaylight
-from datetime import datetime, timedelta
-from app.core.icalendar import ICalendar
-from dateutil import parser
-import pytz
 import logging
+from datetime import datetime, timedelta
+
+import pytz
+from dateutil import parser
+from icalendar import Calendar, Event, Timezone, TimezoneDaylight, TimezoneStandard
+
+from app.core.icalendar import ICalendar
 
 logger = logging.getLogger(__name__)
+
 
 class ICalendarImpl(ICalendar):
     def __init__(self):
         """
         Initialize the ICalendarImpl class.
-        
+
         This constructor initializes the iCalendar object and adds timezone information.
         """
         self.calendar = Calendar()
@@ -32,21 +35,21 @@ class ICalendarImpl(ICalendar):
         in different time zones.
         """
         timezone = Timezone()
-        timezone.add('TZID', 'UTC')  # Define the timezone ID as UTC
+        timezone.add("TZID", "UTC")  # Define the timezone ID as UTC
 
         # Define the standard time sub-component
         standard = TimezoneStandard()
-        standard.add('DTSTART', datetime(1970, 10, 25, 2, 0, 0, tzinfo=pytz.UTC))
-        standard.add('TZOFFSETFROM', timedelta(hours=-4))
-        standard.add('TZOFFSETTO', timedelta(hours=-5))
-        standard.add('TZNAME', 'EST')
+        standard.add("DTSTART", datetime(1970, 10, 25, 2, 0, 0, tzinfo=pytz.UTC))
+        standard.add("TZOFFSETFROM", timedelta(hours=-4))
+        standard.add("TZOFFSETTO", timedelta(hours=-5))
+        standard.add("TZNAME", "EST")
 
         # Define the daylight saving time sub-component
         daylight = TimezoneDaylight()
-        daylight.add('DTSTART', datetime(1970, 4, 26, 2, 0, 0, tzinfo=pytz.UTC))
-        daylight.add('TZOFFSETFROM', timedelta(hours=-5))
-        daylight.add('TZOFFSETTO', timedelta(hours=-4))
-        daylight.add('TZNAME', 'EDT')
+        daylight.add("DTSTART", datetime(1970, 4, 26, 2, 0, 0, tzinfo=pytz.UTC))
+        daylight.add("TZOFFSETFROM", timedelta(hours=-5))
+        daylight.add("TZOFFSETTO", timedelta(hours=-4))
+        daylight.add("TZNAME", "EDT")
 
         # Add the standard and daylight components to the timezone
         timezone.add_component(standard)
@@ -58,37 +61,48 @@ class ICalendarImpl(ICalendar):
     def add_event(self, event):
         """
         Add a single event to the iCalendar from JSON data.
-        
+
         Parameters:
         calendar (Calendar): The iCalendar object to add events to
         event (dict): A dictionary containing event details
-        
+
         This method parses the event details from the provided JSON data and adds it to the
         iCalendar object. It supports both all-day events and time-specific events.
         """
         try:
             ical_event = Event()
-            ical_event.add('summary', event.get('trimmedPrefixedName'))  # Add the event summary
+            ical_event.add(
+                "summary", event.get("trimmedPrefixedName")
+            )  # Add the event summary
 
-            dtstart = parser.parse(event.get('timestamp_local')).astimezone(pytz.UTC)  # Parse and convert start time to UTC
-            if event.get('timeLabel') == 'All Day':
+            dtstart = parser.parse(event.get("timestamp_local")).astimezone(
+                pytz.UTC
+            )  # Parse and convert start time to UTC
+            if event.get("timeLabel") == "All Day":
                 dtstart = dtstart.date()  # Convert to date for all-day events
                 dtend = dtstart + timedelta(days=1)  # Set end date to the next day
-                ical_event.add('dtstart', dtstart)
-                ical_event.add('dtend', dtend)
+                ical_event.add("dtstart", dtstart)
+                ical_event.add("dtend", dtend)
             else:
-                dtend = dtstart + timedelta(hours=1)  # Set end time to one hour after start time
-                ical_event.add('dtstart', dtstart)
-                ical_event.add('dtend', dtend)
+                dtend = dtstart + timedelta(
+                    hours=1
+                )  # Set end time to one hour after start time
+                ical_event.add("dtstart", dtstart)
+                ical_event.add("dtend", dtend)
 
             # Add other event details
-            ical_event.add('description', f"Country: {event.get('country')}, Impact: {event.get('impactTitle')}, Forecast: {event.get('forecast')}, Previous: {event.get('previous')}")
-            ical_event.add('location', event.get('country'))
+            ical_event.add(
+                "description",
+                f"Country: {event.get('country')}, Impact: {event.get('impactTitle')}, Forecast: {event.get('forecast')}, Previous: {event.get('previous')}",
+            )
+            ical_event.add("location", event.get("country"))
 
             # Add the event to the calendar
             self.calendar.add_component(ical_event)
         except Exception as e:
-            logger.exception("Failed to create iCal event for JSON event: %s", event, e)
+            logger.exception(
+                "Failed to create iCal event for JSON event: %s\n%s", event, e
+            )
 
     def to_string(self):
         """
@@ -97,4 +111,4 @@ class ICalendarImpl(ICalendar):
         Returns:
         str: The iCalendar data as a string
         """
-        return self.calendar.to_ical().decode('utf-8')
+        return self.calendar.to_ical().decode("utf-8")

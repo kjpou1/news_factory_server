@@ -11,9 +11,7 @@
             "type": "debugpy",
             "request": "launch",
             "program": "run.py",
-            "args2": ["-c=./config.json"],
             "args": ["-c=./config.json"]
-            
         }
     ]
 }
