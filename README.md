@@ -1,109 +1,99 @@
-# Docker Documentation for news_factory_server
+# news_factory_server
 
-This document provides instructions for building, running, and managing the Docker containers for the `news_factory_server` project.
+**news_factory_server** is a robust Python-based server template designed to dynamically serve Forex News Event iCal calendar files. 
 
-## Directory Structure
+It leverages Flask for the web framework and supports flexible endpoint configurations via JSON files. Key features include:
 
-The following files are located in the `deployments/` directory:
+- **Dynamic Calendar Updates**: Automatically updates calendar data in response to file changes.
+- **Flexible Configuration**: Supports configurable endpoints via JSON files.
+- **Real-Time Data**: Ideal for applications requiring real-time calendar updates.
+- **Command-Line Interface**: Easy-to-use command-line interface for configuration.
+- **Comprehensive Configuration Options**: Allows for extensive customization and setup.
 
+This project serves as a foundational template for building sophisticated calendar-based applications.
+
+See sister project [news_factory](https://github.com/kjpou1/news_factory) for generating forex news events.
+
+## Table of Contents
+
+- [news_factory_server](#news_factory_server)
+  - [Table of Contents](#table-of-contents)
+  - [Installation](#installation)
+  - [Usage](#usage)
+    - [Command Line Arguments](#command-line-arguments)
+    - [Examples](#examples)
+  - [Configuration](#configuration)
+  - [Shell Script](#shell-script)
+    - [Shell Script Examples](#shell-script-examples)
+    - [Running the Shell Script](#running-the-shell-script)
+  - [License](#license)
+
+## Installation
+
+1. **Clone the repository:**
+
+    ```bash
+    git clone https://github.com/yourusername/project_name.git
+    cd project_name
+    ```
+
+2. **Create and activate a virtual environment:**
+
+    ```bash
+    python -m venv .venv
+    source .venv/bin/activate  # On Windows use `.venv\Scripts\activate`
+    ```
+
+3. **Install the required dependencies:**
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+5. **Set environment file**
+
+    Copy or rename the `example_env` file to `.env` before running
+
+    ```bash
+    cp example_env .env
+    ```
+
+## Usage
+
+To run the server, use the provided `run.py` script with appropriate command-line arguments.
+
+### Command Line Arguments
+
+- `--server` or `-s`: Server host (default: `0.0.0.0`).
+- `--port` or `-p`: Server port (default: `8036`).
+- `--config` or `-c`: Path to the configuration JSON file (required).
+
+### Examples
+
+To run the program with a specific configuration file:
+
+```bash
+python run.py --config /path/to/config.json
 ```
-deployments/
-├── Dockerfile
-├── docker-compose.yml
-└── .dockerignore
-```
 
-### Files Overview
+## Server Configuration
 
-- **Dockerfile**: Defines the Docker image for the project.
-- **docker-compose.yml**: Example Docker Compose file that can be copied and modified to run the application on a local machine.
-- **.dockerignore**: Specifies which files and directories should be ignored by Docker.
+The configuration settings are managed through environment variables and can be set in a `.env` file in the root directory of the project. 
+Example `.env` file:
 
-## Building and Running the Docker Container
-
-### Prerequisites
-
-Ensure you have Docker and Docker Compose installed on your machine.
-
-### Using Docker Compose
-
-#### Step-by-Step Guide
-
-1. **Navigate to the Project Directory**
-
-   Navigate to the root directory of your project:
-
-   ```bash
-   cd /path/to/your/project
-   ```
-
-2. **Copy the Example Docker Compose File**
-
-   Copy the example `docker-compose.yml` file to `deployments/local_docker-compose.yml` for your local environment setup:
-
-   ```bash
-   cp deployments/docker-compose.yml deployments/local_docker-compose.yml
-   ```
-
-3. **Modify the `local_docker-compose.yml` File**
-
-   Open `deployments/local_docker-compose.yml` and modify it to suit your local environment. Ensure the paths are correctly set for your local data and configuration files.
-
-4. **Build the Docker Image**
-
-   Use the `--build` flag with `docker-compose up` to rebuild the image:
-
-   ```bash
-   docker-compose -f deployments/local_docker-compose.yml up --build -d
-   ```
-
-#### Example Docker Compose File (`docker-compose.yml`)
-
-This is an example Docker Compose file that you can copy and modify to run the application on your local machine.
-
-```yaml
-services:
-  news_factory:
-    build: .
-    ports:
-      - "8036:8036"
-    environment:
-      FLASK_APP: run.py
-      FLASK_RUN_HOST: 0.0.0.0
-      CONFIG_PATH: /usr/src/app/config.json
-    volumes:
-      - ..:/usr/src/app
-      - /path/to/your/project/data:/usr/src/app/data
-      - ../config_docker.json:/usr/src/app/config.json
-    command: ["python", "run.py", "--config", "/usr/src/app/config.json"]
+``` 
+SERVER_HOST=0.0.0.0
+SERVER_PORT=8036
 ```
 
 > [!NOTE]
-> `- /path/to/your/project/data:/usr/src/app/data` needs to be modified to point to your mapped data directory.
+> An `example_env` file is provided to get started.  Copy the file to `.env` before running:
 
-#### Custom Docker Compose File (`local_docker-compose.yml`)
+## Endpoint Configuration
 
-This Docker Compose file is used to run the local server. It is customized for my local development environment.
+The `EndPoint` configuration settings are managed through a JSON configuration file. Each configuration entry specifies an endpoint, the description, and the file path to the data.
 
-```yaml
-services:
-  news_factory:
-    build:
-      context: ..
-      dockerfile: deployments/Dockerfile
-    ports:
-      - "8036:8036"
-    environment:
-      FLASK_APP: run.py
-      FLASK_RUN_HOST: 0.0.0.0
-    volumes:
-      - ..:/usr/src/app
-      - /Users/egodraconis/Library/Mobile Documents/com~apple~CloudDocs/rabbits_hole/calendars:/usr/src/app/data
-      - ../config_docker.json:/usr/src/app/config.json
-    command: ["python", "run.py", "--config", "/usr/src/app/config.json"]
-```
-
-I set a custom config JSON file to point to the docker mapped data directory:
+Example configuration file (config.json):
 
 ```json
 {
@@ -112,112 +102,310 @@ I set a custom config JSON file to point to the docker mapped data directory:
             "name": "today",
             "description": "Today's event data",
             "end_point": "today.ics",
-            "file": "/usr/src/app/data/calendar_data_today_cleaned_data.json"
+            "file": "/path/to/calendar_data_today_cleaned_data.json"
+        },
+        {
+            "name": "today_nnfx",
+            "description": "Today's event data with NNFX filter",
+            "end_point": "today_nnfx.ics",
+            "file": "/path/to/calendar_data_today_nnfx_cleaned_data.json"
+        }
+    ]
+}
+````
+
+Place the configuration file in the desired location and provide its path using the `--config` argument when running the server.
+
+> [!NOTE]
+> Each of the `end_point` configuration entries will be dynamically generated by the server and made available as URL Endpoints.  See below for more documentation.
+
+
+## URL Endpoints, Filters, and Query Parameters
+
+> [!NOTE]
+> The URL Endpoints used and referenced below come from the example config mentioned above.
+
+> [!IMPORTANT]
+> The URL Endpoints used and referenced below do not exist by default and are here only as documentation purposes from the example config above.
+
+
+### URL Endpoints
+
+#### `today.ics` Endpoint
+
+**URL:** `/today.ics`
+
+**Description:** Serves the iCal calendar for today's events.
+
+**Curl Command:**
+
+```bash
+curl -X GET "http://localhost:8036/today.ics"
+```
+
+#### `today_nnfx.ics` Endpoint
+
+**URL:** `/today_nnfx.ics`
+
+**Description:** Serves the iCal calendar for today's events with NNFX filter.
+
+**Curl Command:**
+
+```bash
+curl -X GET "http://localhost:8036/today_nnfx.ics"
+```
+
+## Filters and Query Parameters
+
+All dynamically generated endpoints support query parameters for filtering the events based on currencies, impact classes, and calendar implementation.
+
+### Query Parameters
+
+- **`currencies`**: Comma-separated list of currency codes (e.g., `AUD,GBP`).
+- **`impact-classes`**: Comma-separated list of impact classes (e.g., `yellow,red`).
+- **`implementation`**: Specifies which library to use for formatting the calendar. Accepted values are `ical` and `icalendar`. Default is `icalendar`.
+
+### `currencies` Parameter
+
+The `currencies` parameter filters events by the specified currencies. The accepted values are:
+
+- `AUD` (Australian Dollar)
+- `CAD` (Canadian Dollar)
+- `CHF` (Swiss Franc)
+- `EUR` (Euro)
+- `GBP` (British Pound)
+- `JPY` (Japanese Yen)
+- `NZD` (New Zealand Dollar)
+- `USD` (United States Dollar)
+
+**Example Curl Command:**
+
+```bash
+curl -X GET "http://localhost:8036/today.ics?currencies=AUD,GBP"
+```
+
+### `impact-classes` Parameter
+
+The `impact-classes` parameter filters events by the specified impact classes. The accepted values are:
+
+- `yellow` (Low Impact)
+- `orange` (Medium Impact)
+- `red` (High Impact)
+- `gray` (Non-Economic)
+
+**Example Curl Command:**
+
+```bash
+curl -X GET "http://localhost:8036/today.ics?impact-classes=yellow,red"
+```
+
+### `implementation` Parameter
+
+The `implementation` parameter specifies which library to use for formatting the calendar. The accepted values are:
+
+- `ical` (uses the `ical` library to format the calendar)
+- `icalendar` (uses the `icalendar` library to format the calendar)
+- Default: `icalendar`
+
+**Example Curl Command:**
+
+```bash
+curl -X GET "http://localhost:8036/today.ics?implementation=ical"
+```
+
+### Combined Filters
+
+You can combine `currencies`, `impact-classes` parameters to filter events based on multiple criteria.
+
+**Example Curl Command:**
+
+```bash
+curl -X GET "http://localhost:8036/today.ics?currencies=AUD,GBP&impact-classes=yellow,red&implementation=ical"
+```
+
+## Example Configurations
+
+### Configuration Snippet for `today.ics`
+
+```json
+{
+    "configurations": [
+        {
+            "name": "today",
+            "description": "Today's event data",
+            "end_point": "today.ics",
+            "file": "/path/to/calendar_data_today_cleaned_data.json"
         }
     ]
 }
 ```
 
-### Building and Using the Docker Image Directly
+### Configuration Snippet for `today_nnfx.ics`
 
-If you prefer to build and run the Docker container directly without using Docker Compose, follow these steps:
+```json
+{
+    "configurations": [
+        {
+            "name": "today",
+            "description": "Today's event data",
+            "end_point": "today.ics",
+            "file": "/path/to/calendar_data_today_cleaned_data.json"
+        },
+        {
+            "name": "today_nnfx",
+            "description": "Today's event data with NNFX filter",
+            "end_point": "today_nnfx.ics",
+            "file": "/path/to/calendar_data_today_nnfx_cleaned_data.json"
+        }
+    ]
+}
+```
 
-1. **Navigate to the Project Directory**
+## Full Example Curl Commands
 
-   Navigate to the root directory of your project:
+1. **Simple Request:**
 
    ```bash
-   cd /path/to/your/project
+   curl -X GET "http://localhost:8036/today.ics"
    ```
 
-2. **Build the Docker Image**
-
-   Use the following command to build the Docker image:
+2. **Request with Currency Filter:**
 
    ```bash
-   docker build -f ./deployments/Dockerfile -t news_factory_server .
+   curl -X GET "http://localhost:8036/today.ics?currencies=AUD,GBP"
    ```
 
-3. **Remove Any Existing Container**
-
-   If there's already a container running with the same name, remove it:
+3. **Request with Impact Class Filter:**
 
    ```bash
-   docker rm -f news_factory_container
+   curl -X GET "http://localhost:8036/today.ics?impact-classes=yellow,red"
    ```
 
-4. **Run the Docker Container**
-
-   Use the following command to run the Docker container:
+4. **Request with Implementation Parameter:**
 
    ```bash
-   docker run -d -p 8036:8036 --name news_factory_container -v /path/to/your/data:/usr/src/app/data -v /path/to/your/config_file.json:/usr/src/app/config.json news_factory_server
+   curl -X GET "http://localhost:8036/today.ics?implementation=ical"
    ```
 
-#### Example of a Customized Command Line
+5. **Request with Combined Filters:**
 
-Here is an example command customized for specific local paths:
+   ```bash
+   curl -X GET "http://localhost:8036/today.ics?currencies=AUD,GBP&impact-classes=yellow,red&implementation=ical"
+   ```
 
-```bash
-docker run -d -p 8036:8036 --name news_factory_container -v '/Users/egodraconis/Library/Mobile Documents/com~apple~CloudDocs/rabbits_hole/calendars':/usr/src/app/data -v '/Users/Jimmy/websharp/projects/python/forexfactory/news_factory_server/config_docker.json':/usr/src/app/config.json news_factory_server
+6. **NNFX Endpoint Request:**
+
+   ```bash
+   curl -X GET "http://localhost:8036/today_nnfx.ics"
+   ```
+
+7. **NNFX Endpoint Request with Filters:**
+
+   ```bash
+   curl -X GET "http://localhost:8036/today_nnfx.ics?currencies=USD,EUR&impact-classes=orange,gray"
+   ```
+
+## Endpoint JSON Data
+
+Each endpoint configuration points to a JSON file containing event data. Below is an example of the JSON data structure and the documentation for each field.
+
+See sister project [news_factory](https://github.com/kjpou1/news_factory) for generating forex news events.
+
+Example JSON Data:
+
+```json
+[
+    {
+        "meta_date": "Thu <span>Jul 4</span>",
+        "date": "2024-07-04T00:00:00",
+        "country": "AU",
+        "currency": "AUD",
+        "impactClass": "icon--ff-impact-yel",
+        "impactTitle": "Low Impact Expected",
+        "name": "Goods Trade Balance",
+        "trimmedPrefixedName": "AUD Goods Trade Balance",
+        "dateline": 1720056600,
+        "forecast": "6.20B",
+        "previous": "6.55B",
+        "timeLabel": "3:30am",
+        "timeMasked": false,
+        "timestamp": "2024-07-03T21:30:00-04:00",
+        "timestamp_local": "2024-07-04T03:30:00+02:00",
+        "event_date": "2024-07-03",
+        "event_time": "21:30:00",
+        "event_date_local": "2024-07-04",
+        "event_time_local": "03:30:00"
+    },
+    {
+        "meta_date": "Thu <span>Jul 4</span>",
+        "date": "2024-07-04T00:00:00",
+        "country": "UK",
+        "currency": "GBP",
+        "impactClass": "icon--ff-impact-red",
+        "impactTitle": "High Impact Expected",
+        "name": "Parliamentary Elections",
+        "trimmedPrefixedName": "GBP Parliamentary Elections",
+        "dateline": 1720078200,
+        "forecast": "",
+        "previous": "",
+        "timeLabel": "All Day",
+        "timeMasked": true,
+        "timestamp": "2024-07-04T03:30:00-04:00",
+        "timestamp_local": "2024-07-04T09:30:00+02:00",
+        "event_date": "2024-07-04",
+        "event_time": "03:30:00",
+        "event_date_local": "2024-07-04",
+        "event_time_local": "09:30:00"
+    }
+]
 ```
 
-## Common Docker Commands
+### Field Documentation
 
-### Building the Docker Image
+- **`meta_date`**: Formatted date with HTML tags (e.g., `"Thu <span>Jul 4</span>"`).
+- **`date`**: Date in ISO 8601 format (e.g., `"2024-07-04T00:00:00"`).
+- **`country`**: Country code (e.g., `"AU"` for Australia).
+- **`currency`**: Currency code (e.g., `"AUD"` for Australian Dollar).
+- **`impactClass`**: CSS class for impact level (e.g., `"icon--ff-impact-yel"` for low impact).
+- **`impactTitle`**: Human-readable impact description (e.g., `"Low Impact Expected"`).
+- **`name`**: Event name (e.g., `"Goods Trade Balance"`).
+- **`trimmedPrefixedName`**: Event name with currency prefix (e.g., `"AUD Goods Trade Balance"`).
+- **`dateline`**: Unix timestamp of the event (e.g., `1720056600`).
+- **`forecast`**: Forecasted value for the event (e.g., `"6.20B"`).
+- **`previous`**: Previous value for the event (e.g., `"6.55B"`).
+- **`timeLabel`**: Time label (e.g., `"3:30am"`).
+- **`timeMasked`**: Boolean indicating if the time is masked (e.g., `false`).
+- **`timestamp`**: Original timestamp in ISO 8601 format (e.g., `"2024-07-03T21:30:00-04:00"`).
+- **`timestamp_local`**: Local timestamp in ISO 8601 format (e.g., `"2024-07-04T03:30:00+02:00"`).
+- **`event_date`**: Date part of the event (e.g., `"2024-07-03"`).
+- **`event_time`**: Time part of the event (e.g., `"21:30:00"`).
+- **`event_date_local`**: Local date part of the event (e.g., `"2024-07-04"`).
+- **`event_time_local`**: Local time part of the event (e.g., `"03:30:00"`).
 
-To build the Docker image, use the following command:
+## Shell Script
 
-```bash
-docker-compose -f deployments/local_docker-compose.yml build
-```
+A shell script run.sh is provided to automate the execution of the script.
 
-### Running the Docker Container
+### Shell Script Examples
 
-To run the Docker container, use the following command:
-
-```bash
-docker-compose -f deployments/local_docker-compose.yml up -d
-```
-
-### Stopping the Docker Container
-
-To stop the Docker container, use the following command:
-
-```bash
-docker-compose -f deployments/local_docker-compose.yml down
-```
-
-### Viewing Logs
-
-To view the logs of the running container, use the following command:
-
-```bash
-docker logs news_factory
-```
-
-### Inspecting the Container
-
-To inspect the container and verify volume mounts, use the following command:
+Example `run.sh`
 
 ```bash
-docker inspect news_factory
+#!/bin/bash
+source ./.venv/bin/activate
+python ./run.py
+deactivate
+
 ```
 
-## Troubleshooting
+### Running the Shell Script
 
-### Container Fails to Start
-
-If the container fails to start, check the logs for error messages:
+To run the script and clear the directory before running:
 
 ```bash
-docker logs news_factory
+./run.sh
 ```
 
-### File Not Found Errors
+## License
 
-Ensure that the paths in the `docker-compose.yml` file are correct and that the files exist at those locations.
-
-## Conclusion
-
-This document provides the necessary steps to build, run, and manage Docker containers for the `news_factory_server` project. If you encounter any issues, refer to the troubleshooting section or check the Docker logs for more details.
+This project is licensed under the MIT License. See the `LICENSE` file for details.
