@@ -193,7 +193,7 @@ docker-compose -f deployments/local_docker-compose.yml down
 To view the logs of the running container, use the following command:
 
 ```bash
-docker logs news_factory
+docker logs news_factory_server
 ```
 
 ### Inspecting the Container
@@ -201,7 +201,7 @@ docker logs news_factory
 To inspect the container and verify volume mounts, use the following command:
 
 ```bash
-docker inspect news_factory
+docker inspect news_factory_server
 ```
 
 ## Troubleshooting
@@ -211,7 +211,7 @@ docker inspect news_factory
 If the container fails to start, check the logs for error messages:
 
 ```bash
-docker logs news_factory
+docker logs news_factory_server
 ```
 
 ### File Not Found Errors
