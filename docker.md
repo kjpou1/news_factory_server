@@ -64,7 +64,10 @@ This is an example Docker Compose file that you can copy and modify to run the a
 ```yaml
 services:
   news_factory:
-    build: .
+    container_name: news_factory_server
+    build:
+      context: ..
+      dockerfile: ./deployments/Dockerfile
     ports:
       - "8036:8036"
     environment:
@@ -88,19 +91,22 @@ This Docker Compose file is used to run the local server. It is customized for m
 ```yaml
 services:
   news_factory:
+    container_name: news_factory_server
     build:
       context: ..
-      dockerfile: deployments/Dockerfile
+      dockerfile: ./deployments/Dockerfile
     ports:
       - "8036:8036"
     environment:
       FLASK_APP: run.py
       FLASK_RUN_HOST: 0.0.0.0
+      CONFIG_PATH: /usr/src/app/config.json
     volumes:
       - ..:/usr/src/app
       - /Users/egodraconis/Library/Mobile Documents/com~apple~CloudDocs/rabbits_hole/calendars:/usr/src/app/data
       - ../config_docker.json:/usr/src/app/config.json
     command: ["python", "run.py", "--config", "/usr/src/app/config.json"]
+
 ```
 
 I set a custom config JSON file to point to the docker mapped data directory:

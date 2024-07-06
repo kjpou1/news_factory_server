@@ -1,6 +1,12 @@
 import argparse
 
-from app.helpers.constants import DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT
+from app.config.config import Config
+from app.helpers.constants import (
+    CONFIG_PATH_KEY,
+    DEFAULT_CONFIG_PATH,
+    DEFAULT_SERVER_HOST,
+    DEFAULT_SERVER_PORT,
+)
 from app.models import CommandLineArgs
 
 
@@ -24,4 +30,6 @@ class CommandLine:
             help="Path to the configuration JSON file",
         )
         args = parser.parse_args()
+        ## allow for docker configurations
+        args.config = args.config or Config.get(CONFIG_PATH_KEY) or DEFAULT_CONFIG_PATH
         return CommandLineArgs(server=args.server, port=args.port, config=args.config)

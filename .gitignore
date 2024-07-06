@@ -138,3 +138,5 @@ test_*
 
 # generated files
 data_files
+config_docker.json
+deployments/local_docker-compose.yml
