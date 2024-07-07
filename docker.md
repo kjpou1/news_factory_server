@@ -1,4 +1,25 @@
 # Docker Documentation for news_factory_server
+- [Docker Documentation for news\_factory\_server](#docker-documentation-for-news_factory_server)
+  - [Directory Structure](#directory-structure)
+    - [Files Overview](#files-overview)
+  - [Building and Running the Docker Container](#building-and-running-the-docker-container)
+    - [Prerequisites](#prerequisites)
+    - [Using Docker Compose](#using-docker-compose)
+      - [Step-by-Step Guide](#step-by-step-guide)
+      - [Example Docker Compose File (`docker-compose.yml`)](#example-docker-compose-file-docker-composeyml)
+      - [Custom Docker Compose File (`local_docker-compose.yml`)](#custom-docker-compose-file-local_docker-composeyml)
+    - [Building and Using the Docker Image Directly](#building-and-using-the-docker-image-directly)
+      - [Example of a Customized Command Line](#example-of-a-customized-command-line)
+  - [Common Docker Commands](#common-docker-commands)
+    - [Building the Docker Image](#building-the-docker-image)
+    - [Running the Docker Container](#running-the-docker-container)
+    - [Stopping the Docker Container](#stopping-the-docker-container)
+    - [Viewing Logs](#viewing-logs)
+    - [Inspecting the Container](#inspecting-the-container)
+  - [Troubleshooting](#troubleshooting)
+    - [Container Fails to Start](#container-fails-to-start)
+    - [File Not Found Errors](#file-not-found-errors)
+  - [Conclusion](#conclusion)
 
 This document provides instructions for building, running, and managing the Docker containers for the `news_factory_server` project.
 
