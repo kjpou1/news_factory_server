@@ -3,6 +3,7 @@ import logging
 from flask import Blueprint, Response, request
 
 from app.config.config import Config
+from app.helpers.constants import DEFAULT_CALENDAR_IMPLEMENTATION
 from app.models.currencies import Currencies
 from app.models.impact_class import ImpactClass
 from app.models.implementation_type import ImplementationType
@@ -50,7 +51,15 @@ def create_route(app, endpoint):
             return Response("No events found", status=404)
 
         # Determine the implementation to use
-        implementation = ImplementationType(implementation_param.lower())
+        try:
+            implementation = ImplementationType(implementation_param.lower())
+        except ValueError:
+            logger.warning(
+                "Invalid implementation '%s' provided. Defaulting to '%s'.",
+                implementation_param,
+                DEFAULT_CALENDAR_IMPLEMENTATION.name,
+            )
+            implementation = DEFAULT_CALENDAR_IMPLEMENTATION
 
         # Generate filtered iCal
         calendar = ICalService.generate_ical(data, implementation.value)
