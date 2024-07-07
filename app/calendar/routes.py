@@ -77,3 +77,31 @@ def create_route(app, endpoint):
 def create_routes_from_config(app, config):
     for ep in config.configurations:
         create_route(app, ep.end_point)
+
+    # Print all URL endpoints after creating routes
+    print_all_endpoints(app, config)
+
+
+def print_all_endpoints(app, config):
+    host = config.server_host
+    port = config.server_port
+    box_width = 50
+    logger.info("%s", "┌" + "─" * (box_width - 2) + "┐")
+    logger.info(
+        "%s",
+        "│"
+        + "\033[95m"
+        + " Registered URL Endpoints:".center(box_width - 2)
+        + "\033[0m"
+        + "│",
+    )
+    logger.info("%s", "├" + "─" * (box_width - 2) + "┤")
+    for rule in app.url_map.iter_rules():
+        if rule.endpoint != "static":
+            url = f"http://{host}:{port}{rule}"
+            endpoint_str = f"{rule.endpoint}: {url}"
+            logger.info(
+                "%s",
+                "│" + "\033[94m" + endpoint_str.ljust(box_width - 2) + "\033[0m" + "│",
+            )
+    logger.info("%s", "└" + "─" * (box_width - 2) + "┘\n")
